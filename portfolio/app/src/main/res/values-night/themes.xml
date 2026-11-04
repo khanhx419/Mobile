@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Base application theme. -->
+    <style name="Base.Theme.My_Portfolio" parent="Theme.Material3.DayNight.NoActionBar">
+        <!-- Dark theme customization -->
+    </style>
+
+    <style name="Theme.My_Portfolio" parent="Base.Theme.My_Portfolio" />
+
+    <style name="ShapeAppearance.App.CircleImageView" parent="">
+        <item name="cornerSize">50%</item>
+    </style>
+</resources>

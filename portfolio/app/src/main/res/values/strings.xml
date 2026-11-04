@@ -1,0 +1,12 @@
+<resources>
+    <string name="app_name">My Portfolio</string>
+    <string name="profile_name">Lê Tuấn Khanh</string>
+    <string name="profile_title">Android Mobile Developer</string>
+    <string name="profile_bio">Là sinh viên Đại học Thủy Lợi, có niềm đam mê và yêu thích lập trình.</string>
+    <string name="connect_with_me">Kết nối với tôi</string>
+    <string name="btn_github">GitHub Profile</string>
+    <string name="btn_linkedin">LinkedIn Profile</string>
+    <string name="btn_facebook">Facebook Cá Nhân</string>
+    <string name="btn_email">Gửi Email Liên Hệ</string>
+    <string name="btn_phone">Gọi Điện Thoại</string>
+</resources>

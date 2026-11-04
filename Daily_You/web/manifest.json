@@ -1,0 +1,19 @@
+{
+  "name": "Nhật Ký Việt",
+  "short_name": "Nhật Ký Việt",
+  "start_url": ".",
+  "display": "standalone",
+  "background_color": "#f8faf7",
+  "theme_color": "#416b57",
+  "description": "Nhật ký cá nhân bằng tiếng Việt.",
+  "orientation": "portrait-primary",
+  "prefer_related_applications": false,
+  "icons": [
+    {
+      "src": "icons/notebook.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

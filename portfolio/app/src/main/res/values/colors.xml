@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="primary">#1976D2</color>
+    <color name="primary_dark">#0D47A1</color>
+    <color name="primary_light">#BBDEFB</color>
+    <color name="accent">#00BCD4</color>
+    <color name="bg_screen">#F5F7FB</color>
+    <color name="card_surface">#FFFFFF</color>
+    <color name="text_primary">#1E293B</color>
+    <color name="text_secondary">#64748B</color>
+    <color name="divider">#E2E8F0</color>
+    <color name="github_color">#24292F</color>
+    <color name="linkedin_color">#0A66C2</color>
+    <color name="facebook_color">#1877F2</color>
+    <color name="email_color">#EA4335</color>
+    <color name="phone_color">#10B981</color>
+</resources>

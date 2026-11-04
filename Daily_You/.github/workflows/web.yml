@@ -1,0 +1,20 @@
+name: Vietnamese Web
+on: [push, pull_request, workflow_dispatch]
+jobs:
+  web:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.47.2'
+          cache: true
+      - run: flutter pub get
+      - run: flutter gen-l10n
+      - run: flutter analyze
+      - run: flutter test test/web_journal_test.dart test/vietnamese_localization_test.dart test/utils/attachment_file_name_test.dart
+      - run: flutter build web --target lib/main_web.dart --no-web-resources-cdn
+      - uses: actions/upload-artifact@v4
+        with:
+          name: nhat-ky-viet-web
+          path: build/web
