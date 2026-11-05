@@ -11,6 +11,7 @@ Tổng hợp mã nguồn các bài tập và dự án môn học. Mỗi thư m�
 | `Daily_You/` | Nhật Ký Việt, bản Việt hóa và tùy biến từ Daily You |
 | `TH2/` | Thư mục bài thực hành 2 hiện chưa có mã nguồn |
 | `TH3/` | English Flow: thói quen học tiếng Anh và đối chiếu phát âm |
+| `KLCN/` | Theo dõi thói quen cá nhân; báo cáo Word, slide và kịch bản trong `tai_lieu/` |
 
 ## Chạy các dự án Flutter
 
