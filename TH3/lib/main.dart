@@ -54,6 +54,7 @@ class _LearningHomeState extends State<LearningHome>
   int tab = 0, lessonIndex = 0;
   bool listening = false, saving = false, settingsBusy = false;
   Assessment? assessment;
+  String speechPhase = 'starting';
   String transcript = '';
   double? confidence;
   DateTime today = DateTime.now();
@@ -61,6 +62,11 @@ class _LearningHomeState extends State<LearningHome>
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
+    SpeechPlatform.observe((phase) {
+      if (mounted && listening && phase != 'idle') {
+        setState(() => speechPhase = phase);
+      }
+    });
     initialize();
   }
 
@@ -97,6 +103,8 @@ class _LearningHomeState extends State<LearningHome>
 
   @override
   void dispose() {
+    SpeechPlatform.observe(null);
+    SpeechPlatform.cancel().catchError((Object _) {});
     WidgetsBinding.instance.removeObserver(this);
     super.dispose();
   }
@@ -129,6 +137,7 @@ class _LearningHomeState extends State<LearningHome>
     final index = lessonIndex;
     setState(() {
       listening = true;
+      speechPhase = 'starting';
       assessment = null;
       transcript = '';
       confidence = null;
@@ -161,7 +170,9 @@ class _LearningHomeState extends State<LearningHome>
         message('Chưa lưu được lượt luyện: $e. Kết quả vẫn hiển thị ở đây.');
       }
     } catch (e) {
-      message(errorMessage(e));
+      if (e is! PlatformException || e.code != 'CANCELLED') {
+        message(errorMessage(e));
+      }
     } finally {
       if (mounted) {
         setState(() {
@@ -250,7 +261,9 @@ class _LearningHomeState extends State<LearningHome>
         }
       }
     } catch (e) {
-      message(errorMessage(e));
+      if (e is! PlatformException || e.code != 'CANCELLED') {
+        message(errorMessage(e));
+      }
     } finally {
       if (mounted) setState(() => settingsBusy = false);
     }
@@ -269,7 +282,9 @@ class _LearningHomeState extends State<LearningHome>
       });
       await reload();
     } catch (e) {
-      message(errorMessage(e));
+      if (e is! PlatformException || e.code != 'CANCELLED') {
+        message(errorMessage(e));
+      }
     } finally {
       if (mounted) setState(() => settingsBusy = false);
     }
@@ -567,19 +582,29 @@ class _LearningHomeState extends State<LearningHome>
             const SizedBox(height: 8),
             Text(
               listening
-                  ? 'Đang nghe… Đọc câu mẫu bằng tiếng Anh.'
+                  ? switch (speechPhase) {
+                      'ready' =>
+                        'Micro đã sẵn sàng. Đọc câu mẫu bằng tiếng Anh.',
+                      'processing' =>
+                        'Đã kết thúc thu. Đang nhận dạng lời nói…',
+                      _ => 'Đang xin quyền / mở micro. Chờ tín hiệu sẵn sàng…',
+                    }
                   : 'Nghe mẫu, rồi đến lượt bạn.',
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 12),
             FilledButton.icon(
               onPressed: listening
-                  ? () => platformAction(SpeechPlatform.stop)
+                  ? () => platformAction(
+                      speechPhase == 'ready'
+                          ? SpeechPlatform.stop
+                          : SpeechPlatform.cancel,
+                    )
                   : (busy ? null : record),
               icon: Icon(listening ? Icons.stop : Icons.mic),
               label: Text(
                 listening
-                    ? 'Kết thúc câu'
+                    ? (speechPhase == 'ready' ? 'Kết thúc câu' : 'Hủy thu âm')
                     : saving
                     ? 'Đang lưu…'
                     : 'Bắt đầu thu âm',

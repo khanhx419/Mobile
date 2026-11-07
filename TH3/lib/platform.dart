@@ -2,6 +2,19 @@ import 'package:flutter/services.dart';
 
 class SpeechPlatform {
   static const channel = MethodChannel('th3/speech');
+  static void observe(void Function(String)? onState) {
+    channel.setMethodCallHandler(
+      onState == null
+          ? null
+          : (call) async {
+              if (call.method == 'speechState' && call.arguments is String) {
+                onState(call.arguments as String);
+              }
+            },
+    );
+  }
+
+  static Future<void> cancel() => channel.invokeMethod('cancel');
   static Future<Map<String, dynamic>?> listen() async {
     final result = await channel.invokeMapMethod<String, dynamic>('listen');
     return result;

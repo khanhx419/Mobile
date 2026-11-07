@@ -1,3 +1,6 @@
+import 'dart:async';
+
+import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
@@ -23,10 +26,15 @@ void main() {
         '${await databaseFactory.getDatabasesPath()}/english_th3.db',
       );
     });
+    final recognition = Completer<Map<String, Object>>();
+    var stops = 0;
     TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
         .setMockMethodCallHandler(SpeechPlatform.channel, (call) async {
           if (call.method == 'listen') {
-            return {'text': 'hello world', 'seconds': 5, 'confidence': 0.9};
+            return recognition.future;
+          }
+          if (call.method == 'stop') {
+            stops++;
           }
           return null;
         });
@@ -41,6 +49,34 @@ void main() {
     await tester.ensureVisible(find.text('Bắt đầu thu âm'));
     await tester.pumpAndSettle();
     await tester.tap(find.text('Bắt đầu thu âm'));
+    await tester.pumpAndSettle();
+    expect(find.textContaining('Đang xin quyền / mở micro'), findsOneWidget);
+    expect(find.text('Kết thúc câu'), findsNothing);
+    expect(find.text('Hủy thu âm'), findsOneWidget);
+    Future<void> state(String phase) async {
+      await tester.binding.defaultBinaryMessenger.handlePlatformMessage(
+        'th3/speech',
+        const StandardMethodCodec().encodeMethodCall(
+          MethodCall('speechState', phase),
+        ),
+        (_) {},
+      );
+      await tester.pumpAndSettle();
+    }
+
+    await state('ready');
+    expect(find.textContaining('Micro đã sẵn sàng'), findsOneWidget);
+    await tester.tap(find.text('Kết thúc câu'));
+    await tester.pumpAndSettle();
+    expect(stops, 1);
+    await state('processing');
+    expect(find.textContaining('Đang nhận dạng lời nói'), findsOneWidget);
+    expect(find.text('Phản hồi lượt luyện'), findsNothing);
+    recognition.complete({
+      'text': 'hello world',
+      'seconds': 5,
+      'confidence': 0.9,
+    });
     await tester.runAsync(() async {
       await Future<void>.delayed(const Duration(milliseconds: 400));
     });
